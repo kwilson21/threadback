@@ -836,6 +836,10 @@ version = "0.4.2"
 MechanicalSoup = "*"
 requests-html = "*"
 
+[package.source]
+reference = "d059353457aaf89727b2b7040013308b2bb02083"
+type = "git"
+url = "https://github.com/bisguzar/twitter-scraper.git"
 [[package]]
 category = "dev"
 description = "a fork of Python 2 and 3 ast modules with type comment support"
@@ -942,7 +946,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "d142e9028866dcdda6f098dc938574c6f4ca19c7121c22d0537d621785f46b30"
+content-hash = "ad9f83b6c9c8f70921333f94769d07d46f5e8efb9cfa8f2dcbbed8c6c0d29df8"
 python-versions = "3.8.3"
 
 [metadata.files]
@@ -1491,10 +1495,7 @@ tqdm = [
 twint = [
     {file = "twint-2.1.20.tar.gz", hash = "sha256:b3b7671997e31ea5dff9f4cca0f83add07c3163fd7ab1dc8e44f9110eeb1965d"},
 ]
-twitter-scraper = [
-    {file = "twitter-scraper-0.4.2.tar.gz", hash = "sha256:7f1093317c2b5a8a85b8fe853aaf24e7f4ed926ddd95b38aed95e9528dda8e96"},
-    {file = "twitter_scraper-0.4.2-py2.py3-none-any.whl", hash = "sha256:12dd7039bb47aecc39ccfe16a838991d3cfa513592342e8cc6c24a0d75d66c04"},
-]
+twitter-scraper = []
 typed-ast = [
     {file = "typed_ast-1.4.1-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:73d785a950fc82dd2a25897d525d003f6378d1cb23ab305578394694202a58c3"},
     {file = "typed_ast-1.4.1-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:aaee9905aee35ba5905cfb3c62f3e83b3bec7b39413f0a7f19be4e547ea01ebb"},

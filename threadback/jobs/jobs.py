@@ -18,7 +18,7 @@ def refresh_user_threads(username):
         except IndexError:
             raise Exception("User does not exist!")
         else:
-            user = models.User(username=username)
+            user = models.User(username=username, user_id=twitter_user.user_id)
 
     user.status = "Pending"
     user.save()
