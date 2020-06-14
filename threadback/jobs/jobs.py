@@ -12,17 +12,6 @@ from threadback.models import models
 def refresh_user_threads(username):
     user = models.User.objects(username=username).first()
 
-    if not user:
-        try:
-            twitter_user = Profile(username)
-        except IndexError:
-            raise Exception("User does not exist!")
-        else:
-            user = models.User(username=username, user_id=twitter_user.user_id)
-
-    user.status = "Pending"
-    user.save()
-
     tweet_config = twint.Config()
     tweet_config.Username = username
     tweet_config.Pandas = True
@@ -94,6 +83,7 @@ def refresh_user_threads(username):
 
                 conversation_ids.append(conversation_id)
 
-        user.update(
-            threads=thread_list, user_id=Tweets_df.iloc[0].user_id, status="None",
-        )
+        user.threads = thread_list
+        user.status = "None"
+
+        user.save()

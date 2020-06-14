@@ -53,57 +53,11 @@ class Query:
             elif user_ids:
                 kwargs["user_id__in"] = user_ids
 
-        _users = models.User.objects(**kwargs)
-
-        return [
-            User(
-                user_id=_user.user_id,
-                username=_user.username,
-                threads=[
-                    Thread(
-                        conversation_id=thread.conversation_id,
-                        tweets=[
-                            Tweet(
-                                tweet_id=tweet.tweet_id,
-                                date=tweet.date,
-                                timezone=tweet.timezone,
-                                text=tweet.text,
-                                nlikes=tweet.nlikes,
-                                nreplies=tweet.nreplies,
-                                nretweets=tweet.nretweets,
-                            )
-                            for tweet in thread.tweets
-                        ],
-                    )
-                    for thread in _user.threads
-                ],
-                status=_user.status,
-            )
-            for _user in _users
-        ]
+        return models.User.objects(**kwargs)
 
     @strawberry.field
     def get_threads(self, info, conversation_ids: List[strawberry.ID]) -> List[Thread]:
-        threads = models.Thread.objects(conversation_id__in=conversation_ids)
-
-        return [
-            Thread(
-                conversation_id=thread.conversation_id,
-                tweets=[
-                    Tweet(
-                        tweet_id=tweet.tweet_id,
-                        date=tweet.date,
-                        timezone=tweet.timezone,
-                        text=tweet.text,
-                        nlikes=tweet.nlikes,
-                        nreplies=tweet.nreplies,
-                        nretweets=tweet.nretweets,
-                    )
-                    for tweet in thread.tweets
-                ],
-            )
-            for thread in threads
-        ]
+        return models.Thread.objects(conversation_id__in=conversation_ids)
 
     @strawberry.field
     def get_tweets(self, info, input_field: TweetInput) -> Tweet:
@@ -112,23 +66,7 @@ class Query:
         if input_field.tweet_ids:
             kwargs["tweet_id__in"] = input_field.tweet_ids
 
-        tweets = models.Tweet.objects(**kwargs)
-
-        for t in tweets:
-            print(t.tweet_id)
-
-        return [
-            Tweet(
-                tweet_id=tweet.tweet_id,
-                date=tweet.date,
-                timezone=tweet.timezone,
-                text=tweet.text,
-                nlikes=tweet.nlikes,
-                nreplies=tweet.nreplies,
-                nretweets=tweet.nretweets,
-            )
-            for tweet in tweets
-        ]
+        return models.Tweet.objects(**kwargs)
 
 
 @strawberry.type
@@ -148,35 +86,20 @@ class Mutation:
 
         user = models.User.objects(**kwargs).first()
 
-        if user:
-            user.update(status="Pending")
-            return User(
-                user_id=user.user_id,
-                username=user.username,
-                threads=[
-                    Thread(
-                        conversation_id=thread.conversation_id,
-                        tweets=[
-                            Tweet(
-                                tweet_id=tweet.tweet_id,
-                                date=tweet.date,
-                                timezone=tweet.timezone,
-                                text=tweet.text,
-                                nlikes=tweet.nlikes,
-                                nreplies=tweet.nreplies,
-                                nretweets=tweet.nretweets,
-                            )
-                            for tweet in thread.tweets
-                        ],
-                    )
-                    for thread in user.threads
-                ],
-                status=user.status,
-            )
+        if not user:
+            try:
+                twitter_user = Profile(username)
+            except IndexError:
+                raise Exception("User does not exist!")
+            else:
+                user = models.User(username=username, user_id=twitter_user.user_id)
+
+        user.status = "Pending"
+        user.save()
 
         jobs.refresh_user_threads(username=username)
 
-        return User()
+        return user
 
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
