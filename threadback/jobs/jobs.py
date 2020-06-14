@@ -74,7 +74,7 @@ def refresh_user_threads(username):
                     else:
                         tweet_list.append(tweet)
 
-                thread = models.Thread.objects(conversation_id=conversation_id)
+                thread = models.Thread.objects(conversation_id=conversation_id).first()
 
                 if not thread:
                     thread = models.Thread(
