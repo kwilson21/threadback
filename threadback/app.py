@@ -14,7 +14,7 @@ if app_env == "development":
 else:
     connect(os.getenv("DB_NAME"), host=os.getenv("DB_HOST"))
 
-huey = RedisHuey("jobs", host=os.getenv("REDIS_URL"), blocking=True, utc=False)
+huey = RedisHuey("jobs", url=os.getenv("REDIS_URL"), blocking=True, utc=False)
 
 debug = app_env == "development"
 
