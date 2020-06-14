@@ -16,6 +16,7 @@ arrow = "^0.15.6"
 huey = "^2.2.0"
 redis = "^3.5.3"
 twitter-scraper = {git = "https://github.com/bisguzar/twitter-scraper.git"}
+dnspython = "^1.16.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
