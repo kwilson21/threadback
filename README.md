@@ -42,7 +42,7 @@ $ (Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry
 To configure your environment variables for this app, create a file called `.env` in the project root directory and set the following variables accordingly
 
 ```bash
-APP_ENV=development
+DEBUG=true
 HOST=localhost
 PORT=8000
 DB_NAME=threadback
