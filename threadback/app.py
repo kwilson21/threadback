@@ -1,30 +1,43 @@
 import importlib
 import os
 
-from dotenv import find_dotenv, load_dotenv
 from huey import MemoryHuey, RedisHuey
-from mongoengine import connect
+from mongoengine import connect, disconnect
 from starlette.applications import Starlette
+from starlette.middleware.cors import CORSMiddleware
 from strawberry.asgi import GraphQL
 
-load_dotenv()
+from threadback import settings
 
-app_env = os.getenv("APP_ENV")
 
-debug = app_env == "development"
+def connect_to_db():
+    connect(settings.DB_NAME, host=settings.MONGODB_URI)
 
-if app_env == "development":
-    connect("threadback")
-else:
-    connect(os.getenv("DB_NAME"), host=os.getenv("MONGODB_URI"))
 
-huey = RedisHuey("jobs", url=os.getenv("REDISTOGO_URL"), blocking=True, utc=False)
+def disconnect_from_db():
+    disconnect(settings.DB_NAME)
 
-app = Starlette(debug=debug)
+
+huey = RedisHuey("jobs", url=settings.REDISTOGO_URL, blocking=True, utc=False)
+
+
+@huey.on_startup()
+def _connect_to_db():
+    connect(settings.DB_NAME, host=settings.MONGODB_URI)
+
+
+@huey.on_shutdown()
+def disconnect_from_db():
+    disconnect(settings.DB_NAME)
+
+
+app = Starlette(
+    debug=settings.DEBUG, on_startup=[connect_to_db], on_shutdown=[disconnect_from_db],
+)
 
 module = "threadback.graphql_schema.schema"
 schema_module = importlib.import_module(module)
-graphql_app = GraphQL(schema_module.schema, debug=debug)
+graphql_app = GraphQL(schema_module.schema, debug=settings.DEBUG)
 
 paths = ["/", "/graphql"]
 
@@ -32,13 +45,7 @@ for path in paths:
     app.add_route(path, graphql_app)
     app.add_websocket_route(path, graphql_app)
 
-if debug:
-    sys.path.append(os.getcwd())
-
-    reloader = hupper.start_reloader("run.run", verbose=False)
-
-    reloader.watch_files([schema_module.__file__])
-
+if settings.DEBUG:
     app.add_middleware(
         CORSMiddleware, allow_headers=["*"], allow_origins=["*"], allow_methods=["*"],
     )

@@ -43,12 +43,11 @@ To configure your environment variables for this app, create a file called `.env
 
 ```bash
 APP_ENV=development
-HOST=
-PORT=
-DB_HOST=
-DB_NAME=
-REDIS_URL=
-WORKER_COUNT=8
+HOST=localhost
+PORT=8000
+DB_NAME=threadback
+MONGODB_URI=
+REDISTOGO_URL=
 ```
 
 ## Install Required Packages

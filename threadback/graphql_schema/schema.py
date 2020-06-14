@@ -43,14 +43,15 @@ class Query:
     def get_users(
         self, info, usernames: List[str] = None, user_ids: List[strawberry.ID] = None,
     ) -> List[User]:
-        if not usernames and not user_ids or usernames and user_ids:
-            raise ValueError("You must specify either a username or user id!")
+        if usernames and user_ids:
+            raise ValueError("Cannot specify both names and user ids!")
 
         kwargs = {}
-        if usernames:
-            kwargs["username__in"] = usernames
-        elif user_ids:
-            kwargs["user_id__in"] = user_ids
+        if not usernames and not user_ids:
+            if usernames:
+                kwargs["username__in"] = usernames
+            elif user_ids:
+                kwargs["user_id__in"] = user_ids
 
         _users = models.User.objects(**kwargs)
 
