@@ -16,9 +16,9 @@ debug = app_env == "development"
 if app_env == "development":
     connect("threadback")
 else:
-    connect(os.getenv("DB_NAME"), host=os.getenv("DB_HOST"))
+    connect(os.getenv("DB_NAME"), host=os.getenv("MONGODB_URI"))
 
-huey = RedisHuey("jobs", url=os.getenv("REDIS_URL"), blocking=True, utc=False)
+huey = RedisHuey("jobs", url=os.getenv("REDISTOGO_URL"), blocking=True, utc=False)
 
 app = Starlette(debug=debug)
 
