@@ -47,11 +47,11 @@ class Query:
             raise ValueError("Cannot specify both names and user ids!")
 
         kwargs = {}
-        if not usernames and not user_ids:
-            if usernames:
-                kwargs["username__in"] = usernames
-            elif user_ids:
-                kwargs["user_id__in"] = user_ids
+
+        if usernames:
+            kwargs["username__in"] = usernames
+        elif user_ids:
+            kwargs["user_id__in"] = user_ids
 
         return models.User.objects(**kwargs)
 
@@ -95,10 +95,9 @@ class Mutation:
                 user = models.User(username=username, user_id=twitter_user.user_id)
 
         if user.status != "Pending":
-            jobs.refresh_user_threads(username=username)
-
             user.status = "Pending"
             user.save()
+            jobs.refresh_user_threads(username=username)
 
         return user
 
