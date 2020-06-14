@@ -74,9 +74,14 @@ def refresh_user_threads(username):
                     else:
                         tweet_list.append(tweet)
 
-                thread = models.Thread(
-                    conversation_id=conversation_id, user=user, tweets=tweet_list,
-                )
+                thread = models.Thread.objects(conversation_id=conversation_id)
+
+                if not thread:
+                    thread = models.Thread(
+                        conversation_id=conversation_id, user=user, tweets=tweet_list,
+                    )
+                else:
+                    thread.tweets = list(set(user.threads + thread_list))
 
                 try:
                     thread.save()
@@ -90,7 +95,8 @@ def refresh_user_threads(username):
 
                 conversation_ids.append(conversation_id)
 
-        user.threads = thread_list
+        user.threads = list(set(user.threads + thread_list))
+
         user.status = "None"
 
         user.save()
