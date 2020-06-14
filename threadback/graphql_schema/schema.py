@@ -94,10 +94,11 @@ class Mutation:
             else:
                 user = models.User(username=username, user_id=twitter_user.user_id)
 
-        user.status = "Pending"
-        user.save()
+        if user.status != "Pending":
+            jobs.refresh_user_threads(username=username)
 
-        jobs.refresh_user_threads(username=username)
+            user.status = "Pending"
+            user.save()
 
         return user
 

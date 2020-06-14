@@ -1,4 +1,5 @@
 import arrow
+import mongoengine
 import pandas as pd
 import pymongo
 import twint
@@ -65,7 +66,10 @@ def refresh_user_threads(username):
 
                     try:
                         tweet.save()
-                    except pymongo.errors.DuplicateKeyError:
+                    except (
+                        pymongo.errors.DuplicateKeyError,
+                        mongoengine.errors.NotUniqueError,
+                    ):
                         pass
                     else:
                         tweet_list.append(tweet)
@@ -76,7 +80,10 @@ def refresh_user_threads(username):
 
                 try:
                     thread.save()
-                except pymongo.errors.DuplicateKeyError:
+                except (
+                    pymongo.errors.DuplicateKeyError,
+                    mongoengine.errors.NotUniqueError,
+                ):
                     pass
                 else:
                     thread_list.append(thread)
