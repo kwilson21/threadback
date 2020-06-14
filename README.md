@@ -46,6 +46,7 @@ APP_ENV=development
 DB_HOST=
 DB_NAME=
 REDIS_URL=
+WORKER_COUNT=8
 ```
 
 ## Install Required Packages

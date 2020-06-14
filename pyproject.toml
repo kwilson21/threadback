@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "threadback"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Kazon Wilson <kazonwilson@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.8.1"
+python = "3.8.3"
 twint = "^2.1.20"
 mongoengine = "^0.20.0"
 pymongo = "^3.10.1"
