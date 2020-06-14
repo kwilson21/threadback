@@ -2,6 +2,7 @@ import time
 from typing import List, Union
 
 import strawberry
+from twitter_scraper import Profile
 
 from threadback.jobs import jobs
 from threadback.models import models

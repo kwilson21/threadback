@@ -3,7 +3,6 @@ import mongoengine
 import pandas as pd
 import pymongo
 import twint
-from twitter_scraper import Profile
 
 from threadback.app import huey
 from threadback.models import models
