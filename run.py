@@ -12,8 +12,8 @@ from threadback.app import app
 
 load_dotenv()
 
-host = os.getenv("APP_HOST", "localhost")
-port = os.getenv("APP_PORT", 8000)
+host = os.getenv("HOST")
+port = os.getenv("PORT")
 
 app_env = os.getenv("APP_ENV")
 debug = app_env == "development"

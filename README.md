@@ -43,6 +43,8 @@ To configure your environment variables for this app, create a file called `.env
 
 ```bash
 APP_ENV=development
+HOST=
+PORT=
 DB_HOST=
 DB_NAME=
 REDIS_URL=
