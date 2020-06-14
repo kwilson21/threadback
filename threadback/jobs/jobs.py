@@ -21,6 +21,7 @@ def refresh_user_threads(username):
             user = models.User(username=username)
 
     user.status = "Pending"
+    user.save()
 
     tweet_config = twint.Config()
     tweet_config.Username = username
