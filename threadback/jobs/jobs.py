@@ -97,7 +97,3 @@ def refresh_user_threads(username):
         user.update(
             threads=thread_list, user_id=Tweets_df.iloc[0].user_id, status="None",
         )
-
-
-if __name__ == "__main__":
-    refresh_user_threads(username="COsweda")
