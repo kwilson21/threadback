@@ -18,7 +18,7 @@ def disconnect_from_db():
     disconnect(settings.DB_NAME)
 
 
-huey = RedisHuey("jobs", url=settings.REDISTOGO_URL, blocking=True, utc=False)
+huey = RedisHuey("jobs", url=settings.REDIS_URL, blocking=True, utc=False)
 
 
 @huey.on_startup()

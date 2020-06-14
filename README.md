@@ -47,7 +47,7 @@ HOST=localhost
 PORT=8000
 DB_NAME=threadback
 MONGODB_URI=
-REDISTOGO_URL=
+REDIS_URL=
 ```
 
 ## Install Required Packages
