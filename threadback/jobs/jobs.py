@@ -81,7 +81,7 @@ def refresh_user_threads(username):
                         conversation_id=conversation_id, user=user, tweets=tweet_list,
                     )
                 else:
-                    thread.tweets = list(set(user.tweet_list + tweet_list))
+                    thread.tweets = list(set(thread.tweets + tweet_list))
 
                 try:
                     thread.save()
