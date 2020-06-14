@@ -90,8 +90,8 @@ def refresh_user_threads(username):
                     mongoengine.errors.NotUniqueError,
                 ):
                     pass
-                else:
-                    thread_list.append(thread)
+
+                thread_list.append(thread)
 
                 conversation_ids.append(conversation_id)
 
