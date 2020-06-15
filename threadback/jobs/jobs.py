@@ -52,6 +52,7 @@ def refresh_user_threads(username):
                 for row in thread_df.itertuples():
                     tweet = models.Tweet(
                         tweet_id=row.id,
+                        link=row.link,
                         date=row.date,
                         timezone=row.timezone,
                         text=row.tweet,
