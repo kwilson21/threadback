@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "threadback"
-version = "0.1.2"
+version = "0.2.0"
 description = ""
 authors = ["Kazon Wilson <kazonwilson@gmail.com>"]
 
@@ -16,11 +16,13 @@ huey = "^2.2.0"
 redis = "^3.5.3"
 twitter-scraper = {git = "https://github.com/bisguzar/twitter-scraper.git"}
 dnspython = "^1.16.0"
+more-itertools = "^8.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 pre-commit = "^2.5.1"
 black = "^19.10b0"
+flake8 = "^3.8.3"
 
 [tool.poetry.scripts]
 app = "run:start_dev"

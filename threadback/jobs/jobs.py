@@ -1,6 +1,5 @@
 import arrow
 import mongoengine
-import pandas as pd
 import pymongo
 import twint
 
@@ -17,11 +16,9 @@ def refresh_user_threads(username):
     tweet_config.Pandas = True
     tweet_config.Hide_output = True
 
-    try:
-        latest_tweet = models.Tweet.objects(user=user).order_by("-date").first()
-    except IndexError:
-        pass
-    else:
+    latest_tweet = models.Tweet.objects(user=user).order_by("-date").first()
+
+    if latest_tweet:
         since = (
             arrow.get(latest_tweet.date)
             .shift(days=-1)
@@ -55,6 +52,7 @@ def refresh_user_threads(username):
                 for row in thread_df.itertuples():
                     tweet = models.Tweet(
                         tweet_id=row.id,
+                        link=row.link,
                         date=row.date,
                         timezone=row.timezone,
                         text=row.tweet,

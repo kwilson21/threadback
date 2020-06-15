@@ -5,6 +5,7 @@ import mongoengine
 
 class Tweet(mongoengine.Document):
     tweet_id = mongoengine.LongField(required=True, unique=True)
+    link = mongoengine.URLField(required=True, unique=True)
     date = mongoengine.DateTimeField(default=datetime.datetime.utcnow, required=True)
     timezone = mongoengine.StringField(required=True)
     text = mongoengine.StringField(required=True)
@@ -24,4 +25,6 @@ class User(mongoengine.Document):
     user_id = mongoengine.LongField(unique=True)
     username = mongoengine.StringField(required=True, unique=True)
     threads = mongoengine.ListField(mongoengine.ReferenceField("Thread"))
+    bio = mongoengine.StringField()
+    profile_photo = mongoengine.URLField()
     status = mongoengine.StringField(choices=("None", "Pending"), default="None")
