@@ -45,6 +45,7 @@ class Ordering:
 @strawberry.type(description="A tweet by a Twitter user")
 class Tweet:
     tweet_id: strawberry.ID = None
+    link: str = None
     date: strawberry.DateTime = None
     timezone: str = None
     text: str = None
@@ -67,6 +68,8 @@ class Thread:
 class User:
     user_id: strawberry.ID = None
     username: str = None
+    bio: str = None
+    profile_photo: str = None
     status: str = None
 
     @strawberry.field(description="Return twitter threads for a given user")
@@ -239,7 +242,12 @@ class Mutation:
             except IndexError:
                 raise Exception("User does not exist!")
             else:
-                user = models.User(username=username, user_id=twitter_user.user_id)
+                user = models.User(
+                    username=username,
+                    user_id=twitter_user.user_id,
+                    bio=twitter_user.biography,
+                    profile_photo=twitter_user.profile_photo,
+                )
 
         if user.status != "Pending":
             user.status = "Pending"
