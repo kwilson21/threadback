@@ -1,5 +1,3 @@
-import os
-
 import uvicorn
 
 from threadback import settings

@@ -1,6 +1,5 @@
 import arrow
 import mongoengine
-import pandas as pd
 import pymongo
 import twint
 

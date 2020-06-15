@@ -1,7 +1,6 @@
 import importlib
-import os
 
-from huey import MemoryHuey, RedisHuey
+from huey import RedisHuey
 from mongoengine import connect, disconnect
 from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
@@ -27,7 +26,7 @@ def _connect_to_db():
 
 
 @huey.on_shutdown()
-def disconnect_from_db():
+def _disconnect_from_db():
     disconnect(settings.DB_NAME)
 
 
