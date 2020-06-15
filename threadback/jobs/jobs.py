@@ -16,11 +16,9 @@ def refresh_user_threads(username):
     tweet_config.Pandas = True
     tweet_config.Hide_output = True
 
-    try:
-        latest_tweet = models.Tweet.objects(user=user).order_by("-date").first()
-    except IndexError:
-        pass
-    else:
+    latest_tweet = models.Tweet.objects(user=user).order_by("-date").first()
+
+    if latest_tweet:
         since = (
             arrow.get(latest_tweet.date)
             .shift(days=-1)
