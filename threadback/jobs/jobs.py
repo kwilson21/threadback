@@ -15,17 +15,18 @@ def refresh_user_threads(username):
     tweet_config = twint.Config()
     tweet_config.Username = username
     tweet_config.Pandas = True
-    tweet_config.Pandas_clean = True
-    tweet_config.Pandas_au = True
     tweet_config.Hide_output = True
 
     try:
-        latest_tweet = user.threads[-1].tweets[-1]
+        latest_tweet = models.Tweet.objects(user=user).order_by("-date").first()
     except IndexError:
         pass
     else:
         since = (
-            arrow.get(latest_tweet.date).shift(days=-1).format("YYYY-MM-DD HH:mm:ss")
+            arrow.get(latest_tweet.date)
+            .shift(days=-1)
+            .replace(hour=0, minute=0, second=0)
+            .format("YYYY-MM-DD HH:mm:ss")
         )
         tweet_config.Since = since
 
