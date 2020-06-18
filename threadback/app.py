@@ -53,4 +53,8 @@ else:
     app.add_middleware(
         CORSMiddleware, allow_origins=settings.ALLOWED_HOSTS, allow_methods=["*"],
     )
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.ALLOWED_HOSTS)
+    app.add_middleware(
+        TrustedHostMiddleware,
+        allowed_hosts=settings.ALLOWED_HOSTS,
+        allow_methods=["*"],
+    )
