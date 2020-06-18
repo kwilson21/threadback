@@ -1,4 +1,5 @@
 from starlette.config import Config
+from starlette.datastructures import CommaSeparatedStrings
 
 config = Config(".env")
 
@@ -8,4 +9,6 @@ MONGODB_URI = config("MONGODB_URI")
 REDIS_URL = config("REDIS_URL")
 HOST = config("HOST", default="localhost")
 PORT = config("PORT", cast=int, default=8000)
-SITE_URL = config("SITE_URL")
+ALLOWED_HOSTS = config(
+    "ALLOWED_HOSTS", cast=CommaSeparatedStrings, default="127.0.0.1,localhost",
+)
