@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional, Sequence, TypeVar
+from typing import Generic, List, Optional, Sequence, TypeVar
 
 import more_itertools
 import strawberry
@@ -11,13 +11,30 @@ from threadback.models import models
 T = TypeVar("T")
 
 
-class Pagination:
+@strawberry.type
+class Paginated(Generic[T]):
+    items: List[T]
+    count: Optional[int] = None
+
     @classmethod
     def paginate(cls, data: Sequence[T], offset: int, limit: Optional[int]):
         sliced_res = more_itertools.nth_or_last(
             more_itertools.ichunked(data, limit), offset, [],
         )
-        return sliced_res
+        return Paginated(sliced_res, data.count())
+
+
+@strawberry.type
+class Connection(Generic[T]):
+    items: List[T]
+    count: Optional[int] = None
+
+    @classmethod
+    def paginate(cls, data: Sequence[T], offset: int, limit: Optional[int]):
+        sliced_res = more_itertools.nth_or_last(
+            more_itertools.ichunked(data, limit), offset, [],
+        )
+        return Paginated(sliced_res, data.count())
 
 
 @strawberry.enum
@@ -49,6 +66,9 @@ class Tweet:
     date: strawberry.DateTime = None
     timezone: str = None
     text: str = None
+    mentions: List[str] = None
+    urls: List[str] = None
+    photos: List[str] = None
     nlikes: int = None
     nreplies: int = None
     nretweets: int = None
@@ -80,7 +100,7 @@ class User:
         offset: Optional[int] = 0,
         limit: Optional[int] = 5,
         order_by: Optional[Ordering] = None,
-    ) -> List[Thread]:
+    ) -> Connection[Thread]:
         query_set = models.Thread.objects(user=self)
 
         if order_by:
@@ -97,7 +117,7 @@ class User:
         else:
             res = query_set.order_by("-conversation_id")
 
-        return Pagination.paginate(res, offset, limit)
+        return Connection.paginate(res, offset, limit)
 
 
 @strawberry.type
@@ -113,7 +133,7 @@ class Query:
         offset: Optional[int] = 0,
         limit: Optional[int] = 5,
         order_by: Optional[Ordering] = None,
-    ) -> List[User]:
+    ) -> Paginated[User]:
         if usernames and user_ids:
             raise ValueError("Cannot specify both names and user ids!")
 
@@ -138,7 +158,7 @@ class Query:
         else:
             res = models.User.objects(**kwargs).order_by("-username")
 
-        return Pagination.paginate(res, offset, limit)
+        return Paginated.paginate(res, offset, limit)
 
     @strawberry.field(description="Return twitter threads")
     def threads(
@@ -150,9 +170,16 @@ class Query:
         offset: Optional[int] = 0,
         limit: Optional[int] = 5,
         order_by: Optional[Ordering] = None,
-    ) -> List[Thread]:
-        if usernames and user_ids:
-            raise ValueError("Cannot specify both names and user ids!")
+    ) -> Paginated[Thread]:
+        # if (
+        #     usernames
+        #     and (user_ids or conversation_ids)
+        #     or user_ids
+        #     and (usernames or conversation_ids)
+        # ):
+        #     raise ValueError(
+        #         "usernames, user_ids and conversation_ids are mutually exclusive!"
+        #     )
 
         if usernames:
             user = models.User.objects(username__in=usernames).first()
@@ -162,6 +189,8 @@ class Query:
             query_set = models.Thread.objects(user=user)
         elif conversation_ids:
             query_set = models.Thread.objects(conversation_id__in=conversation_ids)
+        else:
+            query_set = models.Thread.objects()
 
         if order_by:
             if order_by.direction is Direction.DESC:
@@ -177,7 +206,7 @@ class Query:
         else:
             res = query_set.order_by("-conversation_id")
 
-        return Pagination.paginate(res, offset, limit)
+        return Paginated.paginate(res, offset, limit)
 
     @strawberry.field(description="Return tweets")
     def tweets(
@@ -189,9 +218,16 @@ class Query:
         offset: Optional[int] = 0,
         limit: Optional[int] = 50,
         order_by: Optional[Ordering] = None,
-    ) -> List[Tweet]:
-        if usernames and user_ids:
-            raise ValueError("Cannot specify both names and user ids!")
+    ) -> Paginated[Tweet]:
+        # if (
+        #     usernames
+        #     and (tweet_ids or tweet_ids)
+        #     or tweet_ids
+        #     and (usernames or tweet_ids)
+        # ):
+        #     raise ValueError(
+        #         "usernames, tweet_ids and tweet_ids are mutually exclusive!"
+        #     )
 
         if usernames:
             user = models.User.objects(username__in=usernames).first()
@@ -216,7 +252,7 @@ class Query:
         else:
             res = query_set.order_by("-tweet_id")
 
-        return Pagination.paginate(res, offset, limit)
+        return Paginated.paginate(res, offset, limit)
 
 
 @strawberry.type
