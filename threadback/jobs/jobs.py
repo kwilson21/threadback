@@ -75,7 +75,7 @@ def refresh_user_threads(username):
 
         twint.run.Search(tweet_config)
 
-        Tweets_df = create_df(twint.output.tweets_list)
+        Tweets_df = create_df(set(twint.output.tweets_list))
 
         if not Tweets_df.empty:
             thread_list = []
@@ -93,6 +93,9 @@ def refresh_user_threads(username):
                     and conversation_id not in conversation_ids
                 ):
                     thread_df = thread_df.iloc[::-1]
+
+                    if len(thread_df) == 1:
+                        continue
 
                     tweet_list = []
                     for row in thread_df.itertuples():
