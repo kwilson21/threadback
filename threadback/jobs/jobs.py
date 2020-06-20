@@ -150,8 +150,6 @@ def refresh_user_threads(username):
                     conversation_ids.append(conversation_id)
 
             user.threads = list(set(user.threads + thread_list))
-    except Exception as e:
-        raise e
     finally:
         user.status = "None"
         user.save()
