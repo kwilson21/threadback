@@ -4,6 +4,7 @@ from huey import RedisHuey
 from mongoengine import connect, disconnect
 from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 from strawberry.asgi import GraphQL
 
 from threadback import settings
@@ -47,4 +48,11 @@ for path in paths:
 if settings.DEBUG:
     app.add_middleware(
         CORSMiddleware, allow_headers=["*"], allow_origins=["*"], allow_methods=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware, allow_origins=["*"], allow_methods=["*"],
+    )
+    app.add_middleware(
+        TrustedHostMiddleware, allowed_hosts=list(settings.ALLOWED_HOSTS),
     )
