@@ -87,7 +87,7 @@ def refresh_user_threads(username):
 
                     tweet_list = []
                     for row in thread_df.itertuples():
-                        if not (row.text and row.text.strip()):
+                        if not (row.tweet and row.tweet.strip()):
                             continue
 
                         tweet = models.Tweet(
@@ -122,7 +122,7 @@ def refresh_user_threads(username):
                         conversation_id=conversation_id,
                     ).first()
 
-                    if thread and not len(tweet_list) > 1:
+                    if not (thread and len(tweet_list) > 1):
                         continue
                     elif not thread:
                         thread = models.Thread(
