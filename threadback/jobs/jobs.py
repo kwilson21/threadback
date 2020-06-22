@@ -81,21 +81,9 @@ def refresh_user_threads(username):
             thread_list = []
             conversation_ids = []
             for conversation_id in Tweets_df.conversation_id:
-                if (
-                    len(
-                        (
-                            thread_df := Tweets_df[
-                                Tweets_df.conversation_id == conversation_id
-                            ]
-                        ),
-                    )
-                    > 1
-                    and conversation_id not in conversation_ids
-                ):
+                thread_df = Tweets_df[Tweets_df.conversation_id == conversation_id]
+                if len(thread_df) > 1 and conversation_id not in conversation_ids:
                     thread_df = thread_df.iloc[::-1]
-
-                    if len(thread_df) == 1:
-                        continue
 
                     tweet_list = []
                     for row in thread_df.itertuples():
