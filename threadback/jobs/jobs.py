@@ -122,7 +122,9 @@ def refresh_user_threads(username):
                         conversation_id=conversation_id,
                     ).first()
 
-                    if not thread:
+                    if thread and not len(tweet_list) > 1:
+                        continue
+                    elif not thread:
                         thread = models.Thread(
                             conversation_id=conversation_id,
                             user=user,
