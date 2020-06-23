@@ -67,7 +67,7 @@ def refresh_user_threads(username):
         if latest_tweet:
             since = (
                 arrow.get(latest_tweet.date)
-                .shift(days=-1)
+                .shift(days=-2)
                 .replace(hour=0, minute=0, second=0)
                 .format("YYYY-MM-DD HH:mm:ss")
             )
@@ -84,7 +84,7 @@ def refresh_user_threads(username):
                 thread_df = Tweets_df[Tweets_df.conversation_id == conversation_id]
                 if len(thread_df) > 1 and conversation_id not in conversation_ids:
                     thread_df = thread_df.iloc[::-1]
-
+                    conversation_ids.append(conversation_id)
                     tweet_list = []
                     for row in thread_df.itertuples():
                         if not (row.tweet and row.tweet.strip()):
@@ -142,8 +142,6 @@ def refresh_user_threads(username):
                         pass
 
                     thread_list.append(thread)
-
-                    conversation_ids.append(conversation_id)
 
             user.threads = list(set(user.threads + thread_list))
     finally:
