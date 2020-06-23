@@ -6,7 +6,6 @@ authors = ["Kazon Wilson <kazonwilson@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "3.8.3"
-twint = "^2.1.20"
 mongoengine = "^0.20.0"
 pymongo = "^3.10.1"
 uvicorn = "^0.11.5"
@@ -17,6 +16,7 @@ redis = "^3.5.3"
 twitter-scraper = {git = "https://github.com/bisguzar/twitter-scraper.git"}
 dnspython = "^1.16.0"
 more-itertools = "^8.4.0"
+twint = {git = "https://github.com/twintproject/twint.git"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

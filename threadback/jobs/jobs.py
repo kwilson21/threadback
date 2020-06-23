@@ -65,12 +65,7 @@ def refresh_user_threads(username):
         latest_tweet = models.Tweet.objects(user=user).order_by("-date").first()
 
         if latest_tweet:
-            since = (
-                arrow.get(latest_tweet.date)
-                .shift(days=-2)
-                .replace(hour=0, minute=0, second=0)
-                .format("YYYY-MM-DD HH:mm:ss")
-            )
+            since = arrow.get(latest_tweet.date).shift(days=-2).format("YYYY-MM-DD")
             tweet_config.Since = since
 
         twint.run.Search(tweet_config)
@@ -79,15 +74,14 @@ def refresh_user_threads(username):
 
         if not Tweets_df.empty:
             thread_list = []
-            conversation_ids = []
-            for conversation_id in Tweets_df.conversation_id:
+            for conversation_id in Tweets_df.conversation_id.unique():
                 thread_df = Tweets_df[Tweets_df.conversation_id == conversation_id]
-                if len(thread_df) > 1 and conversation_id not in conversation_ids:
+                if len(thread_df) > 1:
                     thread_df = thread_df.iloc[::-1]
-                    conversation_ids.append(conversation_id)
+
                     tweet_list = []
                     for row in thread_df.itertuples():
-                        if not (row.tweet and row.tweet.strip()):
+                        if not row.tweet and not row.tweet.strip():
                             continue
 
                         tweet = models.Tweet(
@@ -122,7 +116,7 @@ def refresh_user_threads(username):
                         conversation_id=conversation_id,
                     ).first()
 
-                    if not (thread and len(tweet_list) > 1):
+                    if not thread and not len(tweet_list) > 1:
                         continue
                     elif not thread:
                         thread = models.Thread(
@@ -130,8 +124,8 @@ def refresh_user_threads(username):
                             user=user,
                             tweets=tweet_list,
                         )
-                    else:
-                        thread.tweets = list(set(thread.tweets + tweet_list))
+
+                    thread.tweets = list(set(thread.tweets + tweet_list))
 
                     try:
                         thread.save()
