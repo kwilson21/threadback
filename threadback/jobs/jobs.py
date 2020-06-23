@@ -65,7 +65,11 @@ def refresh_user_threads(username):
         latest_tweet = models.Tweet.objects(user=user).order_by("-tweet_id").first()
 
         if latest_tweet:
-            since = arrow.get(latest_tweet.date).shift(days=-2).format("YYYY-MM-DD")
+            since = (
+                arrow.get(latest_tweet.date, tzinfo=latest_tweet.timezone)
+                .shift(days=-2)
+                .format("YYYY-MM-DD")
+            )
             tweet_config.Since = since
 
         twint.run.Search(tweet_config)
