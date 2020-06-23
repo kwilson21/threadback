@@ -62,7 +62,7 @@ def refresh_user_threads(username):
         tweet_config.Store_object = True
         tweet_config.Hide_output = True
 
-        latest_tweet = models.Tweet.objects(user=user).order_by("-date").first()
+        latest_tweet = models.Tweet.objects(user=user).order_by("-tweet_id").first()
 
         if latest_tweet:
             since = arrow.get(latest_tweet.date).shift(days=-2).format("YYYY-MM-DD")
