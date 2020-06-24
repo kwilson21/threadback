@@ -216,7 +216,7 @@ class Query:
         user_ids: List[strawberry.ID] = None,
         tweet_ids: Optional[List[strawberry.ID]] = None,
         offset: Optional[int] = 0,
-        limit: Optional[int] = 50,
+        limit: Optional[int] = 9999,
         order_by: Optional[Ordering] = None,
     ) -> Paginated[Tweet]:
         # if (
