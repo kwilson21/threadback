@@ -18,34 +18,15 @@ def create_df(tweets):
                 "conversation_id": tweet.conversation_id,
                 "date": arrow.get(dt).format("YYYY-MM-DD HH:mm:ss"),
                 "timezone": tweet.timezone,
-                # "place": tweet.place,
                 "tweet": tweet.tweet,
                 "mentions": tweet.mentions,
                 "urls": tweet.urls,
                 "photos": tweet.photos,
-                # "hashtags": tweet.hashtags,
-                # "cashtags": tweet.cashtags,
-                # "user_id": tweet.user_id,
-                # "user_id_str": tweet.user_id_str,
                 "username": tweet.username,
-                # "name": tweet.name,
                 "link": tweet.link,
-                # "retweet": tweet.retweet,
                 "nlikes": int(tweet.likes_count),
                 "nreplies": int(tweet.replies_count),
                 "nretweets": int(tweet.retweets_count),
-                # "quote_url": tweet.quote_url,
-                # "near": tweet.near,
-                # "geo": tweet.geo,
-                # "source": tweet.source,
-                # "user_rt_id": tweet.user_rt_id,
-                # "user_rt": tweet.user_rt,
-                # "retweet_id": tweet.retweet_id,
-                # "reply_to": tweet.reply_to,
-                # "retweet_date": tweet.retweet_date,
-                # "translate": tweet.translate,
-                # "trans_src": tweet.trans_src,
-                # "trans_dest": tweet.trans_dest,
             },
         )
 
@@ -94,7 +75,7 @@ def refresh_user_threads(username):
         if not Tweets_df.empty:
             thread_list = []
             for conversation_id in Tweets_df.conversation_id.unique():
-                thread_df = Tweets_df[Tweets_df.conversation_id == conversation_id]
+                thread_df = Tweets_df[(Tweets_df.conversation_id == conversation_id)]
                 if len(thread_df) > 1:
                     thread_df = thread_df.iloc[::-1]
 
@@ -124,18 +105,17 @@ def refresh_user_threads(username):
                             pymongo.errors.DuplicateKeyError,
                             mongoengine.errors.NotUniqueError,
                         ):
-                            pass
-                        else:
-                            tweet_list.append(tweet)
+                            tweet = models.Tweet.objects(tweet_id=row.id).first()
 
-                    if not tweet_list:
-                        continue
+                        tweet_list.append(tweet)
 
                     thread = models.Thread.objects(
                         conversation_id=conversation_id,
                     ).first()
 
-                    if not thread and not len(tweet_list) > 1:
+                    if thread:
+                        thread.modify(add_to_set__tweets=tweet_list)
+                    elif not thread and not len(tweet_list) > 1:
                         continue
                     elif not thread:
                         thread = models.Thread(
@@ -143,20 +123,12 @@ def refresh_user_threads(username):
                             user=user,
                             tweets=tweet_list,
                         )
-
-                    thread.tweets = list(set(thread.tweets + tweet_list))
-
-                    try:
                         thread.save()
-                    except (
-                        pymongo.errors.DuplicateKeyError,
-                        mongoengine.errors.NotUniqueError,
-                    ):
-                        pass
 
                     thread_list.append(thread)
 
-            user.threads = list(set(user.threads + thread_list))
+            user.modify(add_to_set__threads=thread_list)
     finally:
+        user = models.User.objects(username=username).first()
         user.status = "None"
         user.save()

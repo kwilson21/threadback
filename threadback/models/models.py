@@ -20,14 +20,14 @@ class Tweet(mongoengine.Document):
 
 class Thread(mongoengine.Document):
     conversation_id = mongoengine.LongField(required=True, unique=True)
-    tweets = mongoengine.ListField(mongoengine.ReferenceField("Tweet"))
+    tweets = mongoengine.SortedListField(mongoengine.ReferenceField("Tweet"))
     user = mongoengine.ReferenceField("User")
 
 
 class User(mongoengine.Document):
     user_id = mongoengine.LongField(unique=True)
     username = mongoengine.StringField(required=True, unique=True)
-    threads = mongoengine.ListField(mongoengine.ReferenceField("Thread"))
+    threads = mongoengine.SortedListField(mongoengine.ReferenceField("Thread"))
     bio = mongoengine.StringField()
     profile_photo = mongoengine.URLField()
     status = mongoengine.StringField(choices=("None", "Pending"), default="None")
