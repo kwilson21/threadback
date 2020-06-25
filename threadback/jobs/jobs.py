@@ -101,7 +101,7 @@ def refresh_user_threads(username):
                         )
 
                         try:
-                            tweet.save()
+                            tweet.save(cascade=True)
                         except (
                             pymongo.errors.DuplicateKeyError,
                             mongoengine.errors.NotUniqueError,
@@ -115,7 +115,7 @@ def refresh_user_threads(username):
                     ).first()
 
                     if thread:
-                        thread.modify(add_to_set__tweets=tweet_list)
+                        thread.tweets = list(set(thread.tweets + tweet_list))
                     elif not thread and not len(tweet_list) > 1:
                         continue
                     elif not thread:
@@ -124,12 +124,11 @@ def refresh_user_threads(username):
                             user=user,
                             tweets=tweet_list,
                         )
-                        thread.save()
+                        thread.save(cascade=True)
 
                     thread_list.append(thread)
 
-            user.modify(add_to_set__threads=thread_list)
+            user.threads = list(set(user.threads + thread_list))
     finally:
-        user = models.User.objects(username=username).first()
         user.status = "None"
-        user.save()
+        user.save(cascade=True)
