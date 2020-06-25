@@ -77,7 +77,9 @@ def refresh_user_threads(username):
         if not Tweets_df.empty:
             thread_list = []
             for conversation_id in Tweets_df.conversation_id.unique():
-                thread_df = Tweets_df[Tweets_df.conversation_id == conversation_id]
+                thread_df = Tweets_df[
+                    Tweets_df.conversation_id == conversation_id
+                ].drop_duplicates("id")
                 if (
                     len(thread_df) > 1
                     and not Tweets_df[Tweets_df.id == conversation_id].empty
@@ -111,7 +113,7 @@ def refresh_user_threads(username):
                             pymongo.errors.DuplicateKeyError,
                             mongoengine.errors.NotUniqueError,
                         ):
-                            tweet = models.Tweet.objects(tweet_id=row.id).first()
+                            pass
 
                         tweet_list.append(tweet)
 
@@ -120,7 +122,14 @@ def refresh_user_threads(username):
                     ).first()
 
                     if thread:
-                        thread.tweets = list(set(thread.tweets + tweet_list))
+                        thread.save(
+                            push_all__tweets=[
+                                tweet
+                                for tweet in tweet_list
+                                if tweet not in thread.tweets
+                            ],
+                            cascade=True,
+                        )
                     elif not thread and not len(tweet_list) > 1:
                         continue
                     elif not thread:
@@ -133,7 +142,11 @@ def refresh_user_threads(username):
 
                     thread_list.append(thread)
 
-            user.threads = list(set(user.threads + thread_list))
+            user.save(
+                push_all__threads=[
+                    thread for thread in thread_list if thread not in user.threads
+                ],
+            )
     finally:
         user.status = "None"
         user.save(cascade=True)
