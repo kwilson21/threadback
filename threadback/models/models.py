@@ -12,6 +12,7 @@ class Tweet(mongoengine.Document):
     mentions = mongoengine.ListField(mongoengine.StringField())
     urls = mongoengine.ListField(mongoengine.URLField())
     photos = mongoengine.ListField(mongoengine.URLField())
+    video = mongoengine.BooleanField(required=True)
     nlikes = mongoengine.IntField(required=True)
     nreplies = mongoengine.IntField(required=True)
     nretweets = mongoengine.IntField(required=True)

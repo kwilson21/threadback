@@ -27,6 +27,7 @@ def create_df(tweets):
                 "nlikes": int(tweet.likes_count),
                 "nreplies": int(tweet.replies_count),
                 "nretweets": int(tweet.retweets_count),
+                "video": tweet.video,
             },
         )
 
@@ -76,8 +77,11 @@ def refresh_user_threads(username):
         if not Tweets_df.empty:
             thread_list = []
             for conversation_id in Tweets_df.conversation_id.unique():
-                thread_df = Tweets_df[(Tweets_df.conversation_id == conversation_id)]
-                if len(thread_df) > 1:
+                thread_df = Tweets_df[Tweets_df.conversation_id == conversation_id]
+                if (
+                    len(thread_df) > 1
+                    and not Tweets_df[Tweets_df.id == conversation_id].empty
+                ):
                     thread_df = thread_df.iloc[::-1]
 
                     tweet_list = []
@@ -94,6 +98,7 @@ def refresh_user_threads(username):
                             mentions=row.mentions,
                             urls=row.urls,
                             photos=row.photos,
+                            video=row.video,
                             nlikes=row.nlikes,
                             nreplies=row.nreplies,
                             nretweets=row.nretweets,
