@@ -14,8 +14,8 @@ def create_df(tweets):
         dt = f"{tweet.datestamp} {tweet.timestamp}"
         value_list.append(
             {
-                "id": str(tweet.id),
-                "conversation_id": tweet.conversation_id,
+                "id": int(tweet.id),
+                "conversation_id": int(tweet.conversation_id),
                 "date": arrow.get(dt).format("YYYY-MM-DD HH:mm:ss"),
                 "timezone": tweet.timezone,
                 "tweet": tweet.tweet,
@@ -57,6 +57,7 @@ def refresh_user_threads(username):
             "nreplies",
             "nretweets",
         ]
+        tweet_config.Filter_retweets = True
 
         latest_tweet = models.Tweet.objects(user=user).order_by("-tweet_id").first()
 
