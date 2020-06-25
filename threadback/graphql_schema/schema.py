@@ -69,6 +69,7 @@ class Tweet:
     mentions: List[str] = None
     urls: List[str] = None
     photos: List[str] = None
+    video: bool = None
     nlikes: int = None
     nreplies: int = None
     nretweets: int = None
