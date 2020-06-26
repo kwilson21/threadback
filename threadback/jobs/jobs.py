@@ -1,10 +1,15 @@
+from contextlib import contextmanager
+
 import arrow
 import mongoengine
 import pandas as pd
 import pymongo
 import twint
+from mongoengine import connect, disconnect
+from rq.decorators import job
 
-from threadback.app import huey
+from threadback import settings
+from threadback.app import conn
 from threadback.models import models
 
 
@@ -34,11 +39,33 @@ def create_df(tweets):
     return pd.DataFrame(value_list)
 
 
-@huey.task()
-def refresh_user_threads(username):
+@contextmanager
+def db():
+    connect(settings.DB_NAME, host=settings.MONGODB_URI)
     try:
-        user = models.User.objects(username=username).first()
+        yield
+    finally:
+        disconnect(settings.DB_NAME)
 
+
+@contextmanager
+def get_user(username):
+    with db():
+        user = models.User.objects(username=username).first()
+        if not user:
+            raise Exception("Could not find user!")
+        elif user.status != "Pending":
+            user.status = "Pending"
+        try:
+            yield user
+        finally:
+            user.status = "None"
+            user.save(cascade=True)
+
+
+@job("high", connection=conn, timeout="1h")
+def refresh_user_threads(username):
+    with get_user(username) as user:
         tweet_config = twint.Config()
         tweet_config.Username = username
         tweet_config.Store_object = True
@@ -72,7 +99,7 @@ def refresh_user_threads(username):
 
         twint.run.Search(tweet_config)
 
-        Tweets_df = create_df(set(twint.output.tweets_list))
+        Tweets_df = create_df(twint.output.tweets_list)
 
         if not Tweets_df.empty:
             thread_list = []
@@ -147,6 +174,3 @@ def refresh_user_threads(username):
                     thread for thread in thread_list if thread not in user.threads
                 ],
             )
-    finally:
-        user.status = "None"
-        user.save(cascade=True)

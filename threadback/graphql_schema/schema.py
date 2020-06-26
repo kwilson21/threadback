@@ -289,7 +289,7 @@ class Mutation:
         if user.status != "Pending":
             user.status = "Pending"
             user.save()
-            jobs.refresh_user_threads(username=username)
+            jobs.refresh_user_threads.delay(username=username)
 
         return user
 
