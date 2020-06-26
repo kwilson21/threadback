@@ -1,0 +1,26 @@
+{
+    "addons": [
+      {
+        "plan": "heroku-redis"
+      },
+      {
+        "plan": "mongolab"
+      }
+    ],
+    "buildpacks": [
+      {
+        "url": "https://github.com/moneymeets/python-poetry-buildpack.git"
+      },
+      {
+        "url": "heroku/python"
+      }
+    ],
+    "env": {
+      "DEBUG": {
+        "value": "True"
+      },
+      "DB_NAME": {
+        "value": "threadback"
+      }
+    }
+  }
