@@ -11,18 +11,19 @@ pymongo = "^3.10.1"
 uvicorn = "^0.11.5"
 strawberry-graphql = "^0.27.2"
 arrow = "^0.15.6"
-huey = "^2.2.0"
 redis = "^3.5.3"
 twitter-scraper = {git = "https://github.com/bisguzar/twitter-scraper.git"}
 dnspython = "^1.16.0"
 more-itertools = "^8.4.0"
 twint = {git = "https://github.com/twintproject/twint.git"}
+rq = "^1.4.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 pre-commit = "^2.5.1"
 black = "^19.10b0"
 flake8 = "^3.8.3"
+pympler = "^0.8"
 
 [tool.poetry.scripts]
 app = "run:start_dev"

@@ -351,18 +351,6 @@ test = ["Cython (0.29.14)"]
 
 [[package]]
 category = "main"
-description = "huey, a little task queue"
-name = "huey"
-optional = false
-python-versions = "*"
-version = "2.2.0"
-
-[package.extras]
-backends = ["redis (>=3.0.0)"]
-redis = ["redis (>=3.0.0)"]
-
-[[package]]
-category = "main"
 description = "Integrated process monitor for developing and reloading daemons."
 name = "hupper"
 optional = false
@@ -622,6 +610,14 @@ zstd = ["zstandard"]
 
 [[package]]
 category = "dev"
+description = "A development tool to measure, monitor and analyze the memory behavior of Python objects."
+name = "pympler"
+optional = false
+python-versions = "*"
+version = "0.8"
+
+[[package]]
+category = "dev"
 description = "Python parsing module"
 name = "pyparsing"
 optional = false
@@ -768,6 +764,18 @@ w3lib = "*"
 
 [[package]]
 category = "main"
+description = "RQ is a simple, lightweight, library for creating background jobs, and processing them."
+name = "rq"
+optional = false
+python-versions = ">=3.4"
+version = "1.4.2"
+
+[package.dependencies]
+click = ">=5.0"
+redis = ">=3.0.0"
+
+[[package]]
+category = "main"
 description = "Job scheduling for humans."
 name = "schedule"
 optional = false
@@ -867,6 +875,7 @@ schedule = "*"
 reference = "44273dd9c69cd5d5f2754b8e1d725f4ffa62311a"
 type = "git"
 url = "https://github.com/twintproject/twint.git"
+
 [[package]]
 category = "main"
 description = "Scrape the Twitter Frontend API without authentication."
@@ -990,7 +999,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "ca1e2036d6bec4f2df137ac7871756fbf3101a53ecbd4a221678e758396edc4d"
+content-hash = "fac77cc3a81fa995647e3decee0c21dbeb4a76340017515f9e16c72afa60e716"
 python-versions = "3.8.3"
 
 [metadata.files]
@@ -1191,9 +1200,6 @@ httptools = [
     {file = "httptools-0.1.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:3592e854424ec94bd17dc3e0c96a64e459ec4147e6d53c0a42d0ebcef9cb9c5d"},
     {file = "httptools-0.1.1-cp38-cp38-win_amd64.whl", hash = "sha256:0a4b1b2012b28e68306575ad14ad5e9120b34fccd02a81eb08838d7e3bbb48be"},
     {file = "httptools-0.1.1.tar.gz", hash = "sha256:41b573cf33f64a8f8f3400d0a7faf48e1888582b6f6e02b82b9bd4f0bf7497ce"},
-]
-huey = [
-    {file = "huey-2.2.0.tar.gz", hash = "sha256:15cef4225f7ae200fbecf89a0fed13e389fd751d6c8e1d3b26562b7df953de0e"},
 ]
 hupper = [
     {file = "hupper-1.10.2-py2.py3-none-any.whl", hash = "sha256:5de835f3b58324af2a8a16f52270c4d1a3d1734c45eed94b77fd622aea737f29"},
@@ -1452,6 +1458,9 @@ pymongo = [
     {file = "pymongo-3.10.1-py2.7-win32.egg", hash = "sha256:f4d06764a06b137e48db6d569dc95614d9d225c89842c885669ee8abc9f28c7a"},
     {file = "pymongo-3.10.1.tar.gz", hash = "sha256:993257f6ca3cde55332af1f62af3e04ca89ce63c08b56a387cdd46136c72f2fa"},
 ]
+pympler = [
+    {file = "Pympler-0.8.tar.gz", hash = "sha256:f74cd2982c5cd92ded55561191945616f2bb904a0ae5cdacdb566c6696bdb922"},
+]
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},
     {file = "pyparsing-2.4.7.tar.gz", hash = "sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1"},
@@ -1528,6 +1537,10 @@ requests = [
 requests-html = [
     {file = "requests-html-0.10.0.tar.gz", hash = "sha256:7e929ecfed95fb1d0994bb368295d6d7c4d06b03fcb900c33d7d0b17e6003947"},
     {file = "requests_html-0.10.0-py3-none-any.whl", hash = "sha256:cb8a78cf829c4eca9d6233f28524f65dd2bfaafb4bdbbc407f0a0b8f487df6e2"},
+]
+rq = [
+    {file = "rq-1.4.2-py2.py3-none-any.whl", hash = "sha256:ef61f4517a1dc499b57bc0fa9e8a8f1c561e1f72abab936dbe9081a4508f8874"},
+    {file = "rq-1.4.2.tar.gz", hash = "sha256:f680c52c7079266465d5e5c49679fab0d14db11d70fec6f1470423408b6bbcf6"},
 ]
 schedule = [
     {file = "schedule-0.6.0-py2.py3-none-any.whl", hash = "sha256:3f895a1036799a25ab9c335de917073e63cf8256920917e932777382f101f08f"},
