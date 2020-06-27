@@ -18,10 +18,7 @@ class Paginated(Generic[T]):
 
     @classmethod
     def paginate(cls, data: Sequence[T], offset: int, limit: Optional[int]):
-        sliced_res = more_itertools.nth_or_last(
-            more_itertools.ichunked(data, limit), offset, [],
-        )
-        return Paginated(sliced_res, data.count())
+        return Paginated(data.skip(offset).limit(limit), data.count())
 
 
 @strawberry.type
@@ -31,10 +28,7 @@ class Connection(Generic[T]):
 
     @classmethod
     def paginate(cls, data: Sequence[T], offset: int, limit: Optional[int]):
-        sliced_res = more_itertools.nth_or_last(
-            more_itertools.ichunked(data, limit), offset, [],
-        )
-        return Paginated(sliced_res, data.count())
+        return Connection(data.skip(offset).limit(limit), data.count())
 
 
 @strawberry.enum
