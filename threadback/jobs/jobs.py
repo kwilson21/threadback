@@ -6,7 +6,6 @@ import pandas as pd
 import pymongo
 import twint
 from mongoengine import connect, disconnect
-from rq.decorators import job
 
 from threadback import settings
 from threadback.app import conn
@@ -63,7 +62,6 @@ def get_user(username):
             user.save(cascade=True)
 
 
-@job("high", connection=conn, timeout="2h")
 def refresh_user_threads(username):
     with get_user(username) as user:
         tweet_config = twint.Config()
