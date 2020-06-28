@@ -63,7 +63,7 @@ def get_user(username):
             user.save(cascade=True)
 
 
-@job("high", connection=conn, timeout="1h")
+@job("high", connection=conn, timeout="2h")
 def refresh_user_threads(username):
     with get_user(username) as user:
         tweet_config = twint.Config()

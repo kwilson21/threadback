@@ -1,7 +1,6 @@
 from enum import Enum
 from typing import Generic, List, Optional, Sequence, TypeVar
 
-import more_itertools
 import strawberry
 from twitter_scraper import Profile
 
