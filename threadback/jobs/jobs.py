@@ -100,7 +100,6 @@ def refresh_user_threads(username):
         Tweets_df = create_df(twint.output.tweets_list)
 
         if not Tweets_df.empty:
-            thread_list = []
             for conversation_id in Tweets_df.conversation_id.unique():
                 thread_df = Tweets_df[
                     Tweets_df.conversation_id == conversation_id
@@ -165,10 +164,10 @@ def refresh_user_threads(username):
                         )
                         thread.save(cascade=True)
 
-                    thread_list.append(thread)
-
-            user.save(
+            user.update(
                 push_all__threads=[
-                    thread for thread in thread_list if thread not in user.threads
+                    thread
+                    for thread in models.Thread.objects(user=user)
+                    if thread not in user.threads
                 ],
             )
