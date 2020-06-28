@@ -274,8 +274,6 @@ class Mutation:
             except IndexError:
                 raise Exception("User does not exist!")
             else:
-                q = Queue("high", connection=conn)
-
                 user = models.User(
                     username=username,
                     user_id=twitter_user.user_id,
@@ -283,17 +281,17 @@ class Mutation:
                     profile_photo=twitter_user.profile_photo,
                 )
 
-                user.status = "Pending"
-                user.save()
-
-                q.enqueue(jobs.refresh_user_threads, username)
+        if user.threads:
+            queue_type = "low"
         else:
-            q = Queue("low", connection=conn)
+            queue_type = "high"
 
-            user.status = "Pending"
-            user.save()
+        q = Queue(queue_type, connection=conn)
 
-            q.enqueue(jobs.refresh_user_threads, username)
+        user.status = "Pending"
+        user.save()
+
+        q.enqueue(jobs.refresh_user_threads, username, job_timeout="3h")
 
         return user
 
