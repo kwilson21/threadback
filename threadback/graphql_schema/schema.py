@@ -2,8 +2,10 @@ from enum import Enum
 from typing import Generic, List, Optional, Sequence, TypeVar
 
 import strawberry
+from rq import Queue
 from twitter_scraper import Profile
 
+from threadback.app import conn
 from threadback.jobs import jobs
 from threadback.models import models
 
@@ -272,6 +274,8 @@ class Mutation:
             except IndexError:
                 raise Exception("User does not exist!")
             else:
+                q = Queue("high", connection=conn)
+
                 user = models.User(
                     username=username,
                     user_id=twitter_user.user_id,
@@ -279,10 +283,17 @@ class Mutation:
                     profile_photo=twitter_user.profile_photo,
                 )
 
-        if user.status != "Pending":
+                user.status = "Pending"
+                user.save()
+
+                q.enqueue(jobs.refresh_user_threads, username)
+        else:
+            q = Queue("low", connection=conn)
+
             user.status = "Pending"
             user.save()
-            jobs.refresh_user_threads.delay(username=username)
+
+            q.enqueue(jobs.refresh_user_threads, username)
 
         return user
 
