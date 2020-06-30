@@ -280,6 +280,8 @@ class Mutation:
                     bio=twitter_user.biography,
                     profile_photo=twitter_user.profile_photo,
                 )
+        else:
+            twitter_user = Profile(username)
 
         if user.threads:
             queue_type = "low"
@@ -289,6 +291,8 @@ class Mutation:
         q = Queue(queue_type, connection=conn)
 
         user.status = "Pending"
+        user.bio = twitter_user.biography
+        user.profile_photo = twitter_user.profile_photo
         user.save()
 
         q.enqueue(jobs.refresh_user_threads, username, job_timeout="3h")
